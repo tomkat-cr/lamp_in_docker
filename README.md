@@ -1,4 +1,4 @@
-# lamp_in_docker
+# lnmp_in_docker
 
 # LNMP Stack with Docker
 
@@ -11,6 +11,7 @@ This project sets up an LNMP (Linux, Nginx, MySQL, PHP) stack using Docker conta
 
 ## Directory Structure
 
+```text
 .
  ├── docker-compose.yml
  └── start_lnmp.sh (script to start the LNMP stack)
@@ -26,6 +27,7 @@ This project sets up an LNMP (Linux, Nginx, MySQL, PHP) stack using Docker conta
  ├── ssl-certs
  │ ├── server.crt (SSL certificate)
  │ └── server.key (SSL private key)
+```
 
 ## Usage
 
