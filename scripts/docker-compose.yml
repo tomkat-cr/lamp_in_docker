@@ -1,0 +1,125 @@
+# docker-compose.yml
+# 2023-06-23 | CR
+#
+
+version: '3.8'
+
+services:
+  nginx:
+    image: nginx:latest
+    container_name: lnmp_nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ${BASE_DIR}/html:/usr/share/nginx/html
+      - ${BASE_DIR}/nginx-conf:/etc/nginx/conf.d
+      - ${BASE_DIR}/ssl-certs:/etc/nginx/ssl-certs
+    depends_on:
+      - php
+
+  php:
+    # image: php:8-fpm
+    build: ./php
+    container_name: lnmp_php
+    volumes:
+      - ${BASE_DIR}/html:/usr/share/nginx/html
+
+  mysql:
+    image: mysql:5.7
+    platform: linux/x86_64
+    container_name: lnmp_mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    volumes:
+      - ${BASE_DIR}/mysql-data:/var/lib/mysql
+      - ${BASE_DIR}/mysql-conf:/etc/mysql/conf.d
+    command: --explicit_defaults_for_timestamp
+
+volumes:
+  html:
+  mysql-data:
+  nginx-conf:
+  mysql-conf:
+
+
+# version: "3"
+
+# services:
+#   db_srv:
+#    container_name: ocr_db_srv
+#    #image: mysql:5.7
+#    environment:
+#      - MYSQL_DATABASE=wp_mbi_prd
+#      - MYSQL_ROOT_PASSWORD=BrosM3d1a.cjrd
+#      - MYSQL_USER=ocraccess
+#      - MYSQL_PASSWORD=BrosM3d1@
+#    volumes:
+#      # Montamos un volumen para MySQL para no perder los datos de bd
+#      #- /ocr_hd_010/mysql:/var/lib/mysql:v
+#      - /ocr_hd_010/mysql:/var/lib/mysql
+#      - /ocr_hd_010/sfiles/menu:/ocr_hd_010/sfiles/menu
+#      - /ocr_hd_020:/ocr_hd_020
+#    build:
+#      context: ./mysql-and-backup-utils
+#      dockerfile: Dockerfile
+#    expose:
+#      - 3306
+#    ports:
+#      - 3306:3306
+#    networks:
+#      - backend
+#    restart: always
+
+#   app_srv:
+#    container_name: ocr_app_srv
+#    # image: php:7-apache
+#    # build: ./php-apache-mysqli/
+#    build:
+#      context: ./php-apache-mysqli
+#      dockerfile: "Dockerfile${OCR_ENVIR_DC_MODE}"
+#    volumes:
+#      # Montamos nuestra web desde fuera en el directorio web del contenedor
+#      #- /ocr_hd_010/www/html:/var/www/html
+#      #- /ocr_hd_010:/ocr_hd_010:v
+#      #- /ocr_hd_020:/ocr_hd_020:v
+#      - /ocr_hd_010:/ocr_hd_010
+#      - /ocr_hd_020:/ocr_hd_020
+#    environment:
+#      - APACHE_LOG_DIR=/ocr_hd_020/logs/apache
+#    expose:
+#      - 80
+#      - 443
+#    ports:
+#      - 80:80
+#      - 443:443
+#    links: 
+#      - db_srv
+#    networks:
+#      - frontend
+#      - backend
+#    restart: always
+
+#   # docker run --name ocr_myadmin -d --link db_srv:db --net backend -p 8090:80 phpmyadmin/phpmyadmin ;
+
+#   phpmyadmin_srv:
+#     container_name: ocr_myadmin
+#     image: phpmyadmin/phpmyadmin
+#     volumes:
+#       - /var/run/docker.sock:/var/run/docker.sock
+#     expose:
+#       - 8090
+#     ports:
+#       - 8090:80
+#     links: 
+#       - db_srv:db
+#     networks:
+#       - backend
+#     restart: always
+
+# networks:
+#   frontend:
+#   backend:
