@@ -41,6 +41,17 @@ if [ "${ERROR_MSG}" = "" ]; then
 fi
 
 if [ "${ERROR_MSG}" = "" ]; then
+    # Set the mysql backup/restore directory
+    if [ ! -d ${BASE_DIR}/mysql-backup_restore ]; then
+        echo "Creating '${BASE_DIR}/mysql-backup_restore' directory"
+        if ! mkdir -p ${BASE_DIR}/mysql-backup_restore
+        then
+            ERROR_MSG="ERROR: cannot create '${BASE_DIR}/mysql-backup_restore' directory"
+        fi
+    fi
+fi
+
+if [ "${ERROR_MSG}" = "" ]; then
     # Generate SSL certificate if not already present
     if [ ! -f ${BASE_DIR}/ssl-certs/server.key ] || [ ! -f ${BASE_DIR}/ssl-certs/server.crt ]; then
         echo "Generating self-signed SSL certificate..."
@@ -76,7 +87,7 @@ if [ "${ERROR_MSG}" = "" ]; then
         echo "Starting LNMP stack containers..."
         if ! docker-compose up -d
         then
-            ERROR_MSG="ERROR: running docker-compose up -d"
+            ERROR_MSG="ERROR: running docker-compose up --build -d"
         else
             if ! docker ps
             then
@@ -95,7 +106,7 @@ if [ "${ERROR_MSG}" = "" ]; then
     fi
     if [ "${RUN_CMD}" == "down" ]; then
         echo "Stopping LNMP stack containers..."
-        if ! docker-compose down    
+        if ! docker-compose down --remove-orphans
         then
             ERROR_MSG="ERROR: running docker-compose down"
         fi

@@ -17,6 +17,17 @@ This project adheres to [Semantic Versioning](http://semver.org/) and [Keep a Ch
 ### Breaks
 
 
+## 0.1.1 (2023-06-28)
+
+### New
+Set the mysql backup/restore directory.
+
+### Changes
+Docker-compose up as daemon -d.
+Docker-compose down with --remove-orphans.
+Mysql container uses mysql:5.6 instead of 5.7 to avoid restore error: Invalid default value for 'scheduled_date_gmt'.
+
+
 ## 0.1.0 (2023-06-22)
 
 ### New
